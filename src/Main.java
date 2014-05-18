@@ -1,16 +1,16 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Main {
     public static void main(String... args) {
         BillCalculator billCalculator = new BillCalculator();
         //        List<String> participants = newArrayList("Person1, Person2");
-        List<String> allParticipants = new ArrayList<String>();
+        Set<String> allParticipants = new HashSet<String>();
         allParticipants.add("Person1");
         allParticipants.add("Person2");
         allParticipants.add("Person3");
 
-        List<String> someParticipants = new ArrayList<String>();
+        Set<String> someParticipants = new HashSet<String>();
         someParticipants.add("Person1");
         someParticipants.add("Person2");
         billCalculator.addExpense(new Expense(10.0, "Person1", allParticipants));
