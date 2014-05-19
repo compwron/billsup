@@ -2,7 +2,7 @@ Purpose:
 When a group of people are sharing expenses (for example, on a road trip) provide an easy way to split and track accounts.
 
 Examples:
-
+````
 1.
 amount, paid by, participants
 10, Bob, [Bob, Alice]
@@ -39,4 +39,4 @@ i.e.: Alice: -1
 outcome from Alice perspective:
 Bob owes Alice 1
 i.e.: Bob: 1
-
+````
