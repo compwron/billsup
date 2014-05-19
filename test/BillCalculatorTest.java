@@ -9,8 +9,8 @@ import static org.junit.Assert.assertThat;
 
 public class BillCalculatorTest {
     private BillCalculator billCalculator;
-    private String PERSON1 = "Person1";
-    private String PERSON2 = "Person2";
+    private String Bob = "Person1";
+    private String Alice = "Person2";
     private String PERSON3 = "Person3";
 
     @Before
@@ -20,45 +20,51 @@ public class BillCalculatorTest {
 
     @Test
     public void shouldOweNothingForNoBillsAndNoParticipants() {
-        billCalculator.addExpense(new Expense(0.0, PERSON1, new HashSet<String>()));
-        assertThat(billCalculator.fromPerspective(PERSON1), is(""));
+        billCalculator.addExpense(new Expense(0.0, Bob, new HashSet<String>()));
+        assertThat(billCalculator.fromPerspective(Bob), is(""));
     }
 
     @Test
     public void shouldOweNothingForNoBillsAndOneParticipant() {
-        billCalculator.addExpense(new Expense(0.0, PERSON1, newHashSet(PERSON2)));
-        assertThat(billCalculator.fromPerspective(PERSON1), is(PERSON2 + ": 0.0\n"));
+        billCalculator.addExpense(new Expense(0.0, Bob, newHashSet(Alice)));
+        assertThat(billCalculator.fromPerspective(Bob), is(Alice + ": 0.0\n"));
     }
 
     @Test
     public void shouldOweNothingForNoBillsAndTwoParticipants() {
-        billCalculator.addExpense(new Expense(0.0, PERSON1, newHashSet(PERSON2, PERSON3)));
-        assertThat(billCalculator.fromPerspective(PERSON1), is(PERSON2 + ": 0.0\n" + PERSON3 + ": 0.0\n"));
+        billCalculator.addExpense(new Expense(0.0, Bob, newHashSet(Alice, PERSON3)));
+        assertThat(billCalculator.fromPerspective(Bob), is(Alice + ": 0.0\n" + PERSON3 + ": 0.0\n"));
     }
 
     @Test
     public void shouldOweNothingForOneBillWithOnlySelfPartcipating() {
-        billCalculator.addExpense(new Expense(10.0, PERSON1, new HashSet<String>()));
-        assertThat(billCalculator.fromPerspective(PERSON1), is(""));
+        billCalculator.addExpense(new Expense(10.0, Bob, new HashSet<String>()));
+        assertThat(billCalculator.fromPerspective(Bob), is(""));
     }
 
     @Test
     public void shouldOweHalfBillForEventSharedWithOneParticipantOtherThanSelf() {
-        billCalculator.addExpense(new Expense(10.0, PERSON1, newHashSet(PERSON1, PERSON2)));
-        assertThat(billCalculator.fromPerspective(PERSON1), is(PERSON2 + ": 5.0\n"));
+        billCalculator.addExpense(new Expense(10.0, Bob, newHashSet(Bob, Alice)));
+        assertThat(billCalculator.fromPerspective(Bob), is(Alice + ": 5.0\n"));
     }
 
     @Test
     public void shouldOweOtherWhenOtherPaysForExpense() {
-        billCalculator.addExpense(new Expense(10.0, PERSON1, newHashSet(PERSON1, PERSON2)));
-        assertThat(billCalculator.fromPerspective(PERSON2), is(PERSON2 + ": -5.0\n"));
+        billCalculator.addExpense(new Expense(10.0, Bob, newHashSet(Bob, Alice)));
+        assertThat(billCalculator.fromPerspective(Alice), is(Bob + ": -5.0\n"));
     }
 
     @Test
     public void shouldOweWholeAmountWhenExpenseIsPaidByOtherPerson() {
-        billCalculator.addExpense(new Expense(10.0, PERSON1, newHashSet(PERSON2)));
-        assertThat(billCalculator.fromPerspective(PERSON1), is(PERSON2 + ": 10.0\n"));
+        billCalculator.addExpense(new Expense(10.0, Bob, newHashSet(Alice)));
+        assertThat(billCalculator.fromPerspective(Bob), is(Alice + ": 10.0\n"));
     }
 
-
+    @Test
+    public void shouldSumTwoBillsPaidByTwoPeople() {
+        billCalculator.addExpense(new Expense(6.0, Bob, newHashSet(Bob, Alice)));
+        billCalculator.addExpense(new Expense(8.0, Alice, newHashSet(Bob, Alice)));
+        assertThat(billCalculator.fromPerspective(Bob), is(Alice + ": -1.0\n"));
+        assertThat(billCalculator.fromPerspective(Alice), is(Bob + ": 1.0\n"));
+    }
 }

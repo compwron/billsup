@@ -10,25 +10,33 @@ public class BillCalculator {
         expenses.add(expense);
     }
 
-    public String fromPerspective(String person) {
+    public String fromPerspective(String self) {
         Map<String, Double> owed = new HashMap<String, Double>();
         for (Expense expense : expenses) {
-            for (String ower : expense.getParticipants()) {
-                if (owed.get(ower) == null) {
-                    owed.put(ower, 0.0);
+            for (String participant : expense.getParticipants()) {
+                if (owed.get(participant) == null) {
+                    owed.put(participant, 0.0);
                 }
 
-                Double amountOwedByOwer = owed.get(ower);
-                Double newAmountOwedByOwer = (amountOwedByOwer += (expense.getAmount() / (expense.getParticipants().size())));
-                if (!ower.equals(person)) {
-                    owed.put(ower, newAmountOwedByOwer);
+                Double previouslyOwed = owed.get(participant);
+                Double newOwedAmount = expense.getAmount() / expense.getParticipants().size();
+                if (!participant.equals(self)) {
+                    if (expense.getPaidBy().equals(self)) {
+                        owed.put(participant, previouslyOwed + newOwedAmount);
+                    } else {
+                        owed.put(participant, previouslyOwed - newOwedAmount);
+                    }
                 }
             }
-        }
 
+        }
+        return summarize(self, owed);
+    }
+
+    private String summarize(String self, Map<String, Double> owed) {
         String summary = "";
         for (String ower : owed.keySet()) {
-            if (!ower.equals(person)) {
+            if (!ower.equals(self)) {
                 summary += ower + ": " + owed.get(ower) + "\n";
             }
         }
