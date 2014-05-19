@@ -43,14 +43,22 @@ public class BillCalculatorTest {
     }
 
     @Test
-    public void shouldOweNothingForOneBillWithOneOtherPersonPartcipating() {
-        billCalculator.addExpense(new Expense(10.0, PERSON2, newHashSet(PERSON1)));
-        assertThat(billCalculator.fromPerspective(PERSON2), is(""));
+    public void shouldOweHalfBillForEventSharedWithOneParticipantOtherThanSelf() {
+        billCalculator.addExpense(new Expense(10.0, PERSON1, newHashSet(PERSON1, PERSON2)));
+        assertThat(billCalculator.fromPerspective(PERSON1), is(PERSON2 + ": 5.0\n"));
     }
 
     @Test
-    public void shouldOweHalfBillForOneBillPaidByOtherPerson() {
-        billCalculator.addExpense(new Expense(10.0, PERSON2, newHashSet(PERSON1)));
-        assertThat(billCalculator.fromPerspective(PERSON1), is(PERSON1 + ": 5.0\n"));
+    public void shouldOweOtherWhenOtherPaysForExpense() {
+        billCalculator.addExpense(new Expense(10.0, PERSON1, newHashSet(PERSON1, PERSON2)));
+        assertThat(billCalculator.fromPerspective(PERSON2), is(PERSON2 + ": -5.0\n"));
     }
+
+    @Test
+    public void shouldOweWholeAmountWhenExpenseIsPaidByOtherPerson() {
+        billCalculator.addExpense(new Expense(10.0, PERSON1, newHashSet(PERSON2)));
+        assertThat(billCalculator.fromPerspective(PERSON1), is(PERSON2 + ": 10.0\n"));
+    }
+
+
 }
