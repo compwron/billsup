@@ -13,10 +13,8 @@ public class Main {
         Set<String> someParticipants = new HashSet<String>();
         someParticipants.add("Person1");
         someParticipants.add("Person2");
-        billCalculator.addExpense(new Expense(10.0, "Person1", allParticipants));
-        billCalculator.addExpense(new Expense(20.0, "Person2", someParticipants));
+        billCalculator.addExpense(new Expense(12.0, "Person1", allParticipants));
+        billCalculator.addExpense(new Expense(12.0, "Person2", someParticipants));
         System.out.println(billCalculator.fromPerspective("Person1"));
-
-
     }
 }
